@@ -172,7 +172,7 @@ def _check_dependencies(conf, required, mandatory):
     for module in required:
         if module in conf.env['NS3_MODULES_FOUND']:
             continue
-        libname = build_ns3_libname(conf.env['NS3_VERSION'], module.lower(), conf.env['LIB_SUFFIX'])
+        libname = f'ns3-{module.lower()}'
         retval = conf.check_cfg(package=libname,
             args='--cflags --libs' + (' --static' if conf.env['NS3_ENABLE_STATIC'] else ''),
             mandatory=mandatory,

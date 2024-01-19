@@ -92,6 +92,7 @@ def _check_nonfatal(conf, *args, **kwargs):
 def configure(conf):
 
     conf.env.GLIBC_INSTALL_DIR = os.path.abspath(conf.options.with_glibc)
+    conf.env['NS3_VERSION'] = '3.38'
 
     if not os.path.exists(conf.env.GLIBC_INSTALL_DIR):
         Logs.error("Custom glibc install directory does not exist ! Please pass a valid directory in --with-glibc argument")
@@ -155,7 +156,7 @@ def configure(conf):
 
 
     # Enable C++-11 support
-    conf.env.append_value('CXXFLAGS', '-std=c++11')
+    conf.env.append_value('CXXFLAGS', '-std=c++17')
 
     if Options.options.kernel_stack:
         if not os.path.isdir(Options.options.kernel_stack):
