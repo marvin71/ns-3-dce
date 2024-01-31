@@ -1,0 +1,18 @@
+## -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
+
+import ns3waf
+import os
+
+def configure(conf):
+    ns3waf.check_modules(conf, ['e2e-cc'], mandatory = True)
+
+def build(bld):
+#    linkerpath=os.path.abspath(os.path.join('..', 'elf-loader','ldso'))
+    bld.build_a_script('dce', needed = ['dce', 'e2e-cc'],
+				  target='bin/dce-e2e-cc',
+				  source=['e2e-cc-dce.cc', 'e2e-application-dce.cc', 'e2e-config-dce.cc'],
+#				  linkflags=['-Wl,--dynamic-linker=' + linkerpath ]
+#				  linkflags=['-L/usr/local/lib'],
+#				  lib=['foolib']
+				  )
+
