@@ -50,8 +50,8 @@ class E2EDceApplication : public E2EComponent
 
   protected:
     DceApplicationHelper m_dceHelper;
-    std::optional<std::string_view> m_startTime;
-    std::optional<std::string_view> m_stopTime;
+    const E2EConfigValue* m_startTime;
+    const E2EConfigValue* m_stopTime;
     Ptr<Application> m_application;
 
 };

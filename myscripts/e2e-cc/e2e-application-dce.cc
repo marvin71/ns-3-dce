@@ -40,15 +40,25 @@ E2EDceApplication::E2EDceApplication(const E2EConfig& config)
         "DCE application '" << GetId() << "' has invalid path length of " << GetIdPath().size());
 
     m_startTime = config.Find("StartTime");
+    if (m_startTime)
+    {
+        m_startTime->processed = true;
+    }
     m_stopTime = config.Find("StopTime");
+    if (m_stopTime)
+    {
+        m_stopTime->processed = true;
+    }
 
     auto binary = config.Find("Binary");
     NS_ABORT_MSG_UNLESS(binary, "No binary given for DCE application " << GetId());
-    m_dceHelper.SetBinary(std::string(*binary));
+    m_dceHelper.SetBinary(std::string(binary->value));
+    binary->processed = true;
 
     if (auto stackSize {config.Find("StackSize")}; stackSize)
     {
-        m_dceHelper.SetStackSize(E2EConfig::ConvertArgToUInteger(std::string(*stackSize)));
+        m_dceHelper.SetStackSize(E2EConfig::ConvertArgToUInteger(std::string(stackSize->value)));
+        stackSize->processed = true;
     }
     else
     {
@@ -60,12 +70,14 @@ E2EDceApplication::E2EDceApplication(const E2EConfig& config)
     m_dceHelper.ResetEnvironment();
     if (auto arguments {config.Find("Arguments")}; arguments)
     {
-        m_dceHelper.ParseArguments(std::string(*arguments));
+        m_dceHelper.ParseArguments(std::string(arguments->value));
+        arguments->processed = true;
     }
     if (auto environment {config.Find("Environment")}; environment)
     {
         // parse environment: KEY1=VALUE1,KEY2=VALUE2,...
-        std::string_view env = *environment;
+        std::string_view env = environment->value;
+        environment->processed = true;
         size_t pos = 0;
         while (pos < env.size())
         {
@@ -92,7 +104,8 @@ E2EDceApplication::E2EDceApplication(const E2EConfig& config)
 
     if (auto stdinFile {config.Find("StdinFile")}; stdinFile)
     {
-        m_dceHelper.SetStdinFile(std::string(*stdinFile));
+        m_dceHelper.SetStdinFile(std::string(stdinFile->value));
+        stdinFile->processed = true;
     }
 }
 
@@ -119,11 +132,11 @@ E2EDceApplication::AddToHost(Ptr<E2EHost> host) {
     m_application = m_dceHelper.InstallInNode(node).Get(0);
     if (m_startTime)
     {
-        m_application->SetStartTime(Time(std::string(*m_startTime)));
+        m_application->SetStartTime(Time(std::string(m_startTime->value)));
     }
     if (m_stopTime)
     {
-        m_application->SetStopTime(Time(std::string(*m_stopTime)));
+        m_application->SetStopTime(Time(std::string(m_stopTime->value)));
     }
     host->AddE2EComponent(this);
 }
